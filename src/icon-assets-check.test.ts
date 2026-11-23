@@ -34,7 +34,7 @@ it('checks all source icons without installed packages', () => {
 
 it('checks built icon references under the app base without installed packages', () => {
   cpSync(join(fixture, 'public'), join(fixture, 'dist'), { recursive: true });
-  const html = readFileSync(join(fixture, 'index.html'), 'utf8').replace(/="\//g, '="/blood/');
+  const html = readFileSync(join(fixture, 'index.html'), 'utf8').replace(/="\//g, '="/rao/');
   writeFileSync(join(fixture, 'dist/index.html'), html);
   const result = check('dist');
   expect(result.status, result.stderr).toBe(0);
@@ -56,11 +56,11 @@ it('checks Windows tile references as well as HTML and manifest icons', () => {
 });
 
 it('rejects truncated PNG pixels', () => {
-  const path = join(fixture, 'public/icons/blood-16.png');
+  const path = join(fixture, 'public/icons/rao-16.png');
   writeFileSync(path, readFileSync(path).subarray(0, 33));
   const result = check();
   expect(result.status).not.toBe(0);
-  expect(result.stderr).toContain('blood-16.png: incomplete PNG image');
+  expect(result.stderr).toContain('rao-16.png: incomplete PNG image');
 });
 
 it('does not mistake a commented-out SVG path for a drawing', () => {

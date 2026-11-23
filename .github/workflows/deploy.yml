@@ -1,4 +1,4 @@
-# GitHub Pages deployment for /blood/
+# GitHub Pages deployment for /rao/
 name: Deploy to GitHub Pages
 
 on:
@@ -30,7 +30,7 @@ jobs:
         run: npm run check
 
       - name: Add Pages README
-        run: printf '%s\n' 'https://aleksr777.github.io/blood/' > dist/README.md
+        run: printf '%s\n' 'https://aleksr777.github.io/rao/' > dist/README.md
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4

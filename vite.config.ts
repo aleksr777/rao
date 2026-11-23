@@ -9,7 +9,7 @@ const legacyMigrationHeaders = {
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: '/blood/',
+  base: '/rao/',
   build: {
     target: ['es2020', 'edge88', 'firefox78', 'chrome87', 'safari14'],
   },

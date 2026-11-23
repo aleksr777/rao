@@ -2,7 +2,7 @@
 import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { afterEach, beforeEach, expect, vi } from 'vitest';
 import type { ReactNode } from 'react';
-import App from '../../app';
+import LegacyApp from '../../legacy-app';
 import { adoptCurrentRecipientFromValues } from '../../storage/repositories/current-recipient';
 import type { ProtocolDraftState } from '../../storage/sqlite/database-types';
 
@@ -114,5 +114,5 @@ export const expectSelection = async (group: string, name: string, coded = false
   });
 };
 
-export const renderApp = () => render(<App />);
+export const renderApp = () => render(<LegacyApp />);
 export const readProtocolDraft = () => storage.protocol;

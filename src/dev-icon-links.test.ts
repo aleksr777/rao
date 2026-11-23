@@ -13,7 +13,7 @@ it('serves every development icon link from the app base exactly once', async ()
   });
   try {
     const base = server.config.base;
-    expect(base).toBe('/blood/');
+    expect(base).toBe('/rao/');
     const html = await server.transformIndexHtml(
       base,
       readFileSync(new URL('../index.html', import.meta.url), 'utf8'),
@@ -28,8 +28,8 @@ it('serves every development icon link from the app base exactly once', async ()
     expect(metadata).toHaveLength(2);
     for (const href of [...links, ...metadata]) {
       const url = new URL(href, `http://localhost:5173${base}`);
-      expect(url.pathname, href).toMatch(/^\/blood\//);
-      expect(url.pathname, href).not.toContain('/blood/blood/');
+      expect(url.pathname, href).toMatch(/^\/rao\//);
+      expect(url.pathname, href).not.toContain('/rao/rao/');
       const file = new URL(`../public/${url.pathname.slice(base.length)}`, import.meta.url);
       expect(existsSync(file), href).toBe(true);
       expect(statSync(file).size, href).toBeGreaterThan(0);

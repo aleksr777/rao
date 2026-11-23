@@ -5,9 +5,9 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const source = readFileSync(join(root, 'assets/branding/blood-mark.svg'), 'utf8');
+const source = readFileSync(join(root, 'assets/branding/rao-mark.svg'), 'utf8');
 const mark = source.match(/<g[\s\S]*<\/g>/)?.[0];
-if (!mark) throw new Error('The master SVG must contain the blood-bag mark.');
+if (!mark) throw new Error('The master SVG must contain a document mark.');
 
 let convert = 'magick';
 try {
@@ -19,7 +19,7 @@ execFileSync(convert, ['-version'], { stdio: 'ignore' });
 execFileSync('inkscape', ['--version'], { stdio: 'ignore' });
 
 const output = (name) => join(root, 'public', name);
-const temporary = mkdtempSync(join(tmpdir(), 'blood-icons-'));
+const temporary = mkdtempSync(join(tmpdir(), 'rao-icons-'));
 const temporaryIcon = output(`.favicon-${process.pid}.tmp`);
 const render = (args) => execFileSync(convert, args, { stdio: 'pipe' });
 const png = (input, size, name) =>
@@ -42,7 +42,7 @@ try {
   );
   writeFileSync(
     output('safari-pinned-tab.svg'),
-    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">\n  <g transform="scale(0.015625)">${mark.replaceAll('#e60012', '#000')}</g>\n</svg>\n`,
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">\n  <g transform="scale(0.015625)">${mark.replaceAll('#426b96', '#000')}</g>\n</svg>\n`,
   );
 
   const master = join(temporary, 'master.png');
@@ -55,7 +55,7 @@ try {
     '--export-background-opacity=1',
   ]);
 
-  for (const size of [16, 32, 48, 96, 192, 512]) png(master, size, `icons/blood-${size}.png`);
+  for (const size of [16, 32, 48, 96, 192, 512]) png(master, size, `icons/rao-${size}.png`);
   for (const size of [120, 152, 167]) png(master, size, `icons/apple-touch-${size}.png`);
   png(master, 180, 'apple-touch-icon.png');
 
@@ -72,7 +72,7 @@ try {
     '2048x2048',
     maskable,
   ]);
-  for (const size of [192, 512]) png(maskable, size, `icons/blood-maskable-${size}.png`);
+  for (const size of [192, 512]) png(maskable, size, `icons/rao-maskable-${size}.png`);
   for (const size of [70, 150, 310]) png(master, size, `icons/mstile-${size}.png`);
   render([
     master,
@@ -119,7 +119,7 @@ try {
   });
   writeFileSync(temporaryIcon, Buffer.concat([directory, ...frames]));
   renameSync(temporaryIcon, output('favicon.ico'));
-  console.log('Generated SVG, ICO, PNG, Apple, maskable and Windows icons from blood-mark.svg.');
+  console.log('Generated SVG, ICO, PNG, Apple, maskable and Windows icons from rao-mark.svg.');
 } finally {
   rmSync(temporaryIcon, { force: true });
   rmSync(temporary, { recursive: true, force: true });

@@ -18,7 +18,7 @@ for (const file of files) {
   digest.update(readFileSync(join(dist, file)));
 }
 
-const cacheName = `blood-static-${digest.digest('hex').slice(0, 16)}`;
+const cacheName = `rao-static-${digest.digest('hex').slice(0, 16)}`;
 const paths = ['./', ...files.filter((file) => file !== 'index.html')];
 const worker = readFileSync(join(root, 'scripts/offline-worker.mjs'), 'utf8');
 writeFileSync(

@@ -5,12 +5,12 @@ import { expect, it } from 'vitest';
 it('loads current assets from the network and falls back to a complete offline version', async () => {
   const listeners = new Map<string, (event: unknown) => void>();
   const stored = new Map<string, Map<string, string>>();
-  const root = 'https://example.test/blood/';
-  const cacheName = 'blood-static-current';
+  const root = 'https://example.test/rao/';
+  const cacheName = 'rao-static-current';
   let online = true;
   let responseOk = true;
   const requests: string[] = [];
-  stored.set('blood-static-old', new Map());
+  stored.set('rao-static-old', new Map());
   const cacheStorage = {
     open: async (name: string) => {
       let entries = stored.get(name);
@@ -76,7 +76,7 @@ it('loads current assets from the network and falls back to a complete offline v
   await run('install');
   await run('activate');
   expect(claimed).toBe(true);
-  expect(stored.has('blood-static-old')).toBe(false);
+  expect(stored.has('rao-static-old')).toBe(false);
   expect(stored.get(cacheName)?.size).toBe(3);
   await expect(
     run('fetch', { request: { method: 'GET', mode: 'navigate', url: root } }),

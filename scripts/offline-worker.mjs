@@ -1,5 +1,5 @@
 /* global CACHE_NAME, PRECACHE */
-const CACHE_PREFIX = 'blood-static-';
+const CACHE_PREFIX = 'rao-static-';
 const APP_ROOT = self.registration.scope;
 
 self.addEventListener('install', (event) => {

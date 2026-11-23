@@ -5,8 +5,6 @@ import './styles/controls.css';
 import './styles/ui.css';
 import './index.css';
 import App from './app.tsx';
-import { AppStartupGate } from './components/app-startup/app-startup-gate';
-import { WorkspaceSessionGate } from './components/workspace-session/workspace-session-gate';
 import { resolveTextSelectionMode } from './domain/text-selection';
 
 document.documentElement.dataset.textSelection = resolveTextSelectionMode(
@@ -22,11 +20,7 @@ const rootElement = document.getElementById('root');
 
 createRoot(rootElement!).render(
   <StrictMode>
-    <AppStartupGate>
-      <WorkspaceSessionGate>
-        <App />
-      </WorkspaceSessionGate>
-    </AppStartupGate>
+    <App />
   </StrictMode>,
 );
 
