@@ -908,6 +908,11 @@ a.site-navigation__link:focus-visible {
   margin: 0;
 }
 
+@page orders {
+  size: A4 landscape;
+  margin: 0;
+}
+
 @media print {
   .app-page-transition {
     min-height: 0;
@@ -922,6 +927,12 @@ a.site-navigation__link:focus-visible {
     margin: 0;
     padding: 0;
     background: #fff;
+  }
+
+  html[data-app-page='orders'],
+  html[data-app-page='orders'] body,
+  html[data-app-page='orders'] #root {
+    width: 297mm;
   }
 
   .app-shell {

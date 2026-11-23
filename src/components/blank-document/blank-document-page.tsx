@@ -9,6 +9,7 @@ const sections: { id: Page; label: string; title: string }[] = [
 
 export const BlankDocumentPage = ({ page }: { page: Page }) => {
   const title = sections.find((section) => section.id === page)!.title;
+  const pageCount = page === 'orders' ? 2 : 1;
 
   return (
     <main className="app-shell">
@@ -39,9 +40,15 @@ export const BlankDocumentPage = ({ page }: { page: Page }) => {
         </div>
       </header>
       <div className={styles.sheetWrap}>
-        <article className={styles.sheet} aria-label={title}>
-          <h1 className={styles.title}>{title}</h1>
-        </article>
+        {Array.from({ length: pageCount }, (_, index) => (
+          <article
+            key={index}
+            className={`${styles.sheet}${page === 'orders' ? ` ${styles.landscape}` : ''}`}
+            aria-label={pageCount === 1 ? title : `${title}, страница ${index + 1}`}
+          >
+            <h1 className={styles.title}>{title}</h1>
+          </article>
+        ))}
       </div>
     </main>
   );

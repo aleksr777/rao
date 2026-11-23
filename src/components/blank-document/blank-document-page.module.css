@@ -23,20 +23,28 @@
 
 .sheetWrap {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
   overflow-x: auto;
   padding: 0 0 20px;
 }
 
 .sheet {
-  flex: 0 0 210mm;
+  flex: none;
   width: 210mm;
-  min-height: 297mm;
+  height: 297mm;
   padding: 20mm 18mm;
   background: #fff;
   box-shadow: 0 8px 32px rgb(18 31 48 / 12%);
   color: #000;
   font-family: 'Times New Roman', Times, serif;
+}
+
+.sheet.landscape {
+  width: 297mm;
+  height: 210mm;
+  page: orders;
 }
 
 .title {
@@ -47,7 +55,7 @@
 
 @media (max-width: 900px) {
   .sheetWrap {
-    justify-content: flex-start;
+    align-items: flex-start;
   }
 }
 
@@ -61,8 +69,17 @@
   .sheet {
     width: 210mm;
     height: 297mm;
-    min-height: 0;
     margin: 0;
     box-shadow: none;
+    break-inside: avoid;
+  }
+
+  .sheet.landscape {
+    width: 297mm;
+    height: 210mm;
+  }
+
+  .sheet:not(:last-child) {
+    break-after: page;
   }
 }

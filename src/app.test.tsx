@@ -34,11 +34,15 @@ describe('blank document pages', () => {
     render(<App />);
     navigate('#/orders');
     act(() => vi.advanceTimersByTime(200));
-    expect(screen.getByRole('heading', { name: 'Лист назначений' })).toBeTruthy();
+    expect(screen.getAllByRole('heading', { name: 'Лист назначений' })).toHaveLength(2);
     navigate('#/diaries');
     navigate('#/orders');
     act(() => vi.advanceTimersByTime(300));
-    expect(screen.getByRole('heading', { name: 'Лист назначений' })).toBeTruthy();
+    expect(screen.getAllByRole('heading', { name: 'Лист назначений' })).toHaveLength(2);
     expect(screen.queryByRole('heading', { name: 'Дневник истории болезни' })).toBeNull();
+    expect(screen.getAllByRole('article')).toHaveLength(2);
+    expect(
+      screen.getAllByRole('article').map((article) => article.getAttribute('aria-label')),
+    ).toEqual(['Лист назначений, страница 1', 'Лист назначений, страница 2']);
   });
 });
