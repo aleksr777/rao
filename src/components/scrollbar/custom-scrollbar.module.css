@@ -1,0 +1,52 @@
+.track {
+  --thumb-min-height: 44px;
+
+  position: fixed;
+  inset: 0 0 0 auto;
+  z-index: 2147483000;
+  width: var(--scrollbar-width);
+  height: 100dvh;
+  background: var(--ui-scrollbar-track);
+  cursor: default;
+  touch-action: none;
+  user-select: none;
+}
+
+.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.track:focus-visible {
+  outline: 2px solid var(--ui-accent);
+  outline-offset: -2px;
+}
+
+.thumb {
+  width: 100%;
+  border: 3px solid transparent;
+  border-radius: 999px;
+  background: var(--ui-accent);
+  background-clip: padding-box;
+  cursor: default;
+  transition: background-color 160ms ease;
+}
+
+.thumb:hover {
+  background-color: var(--ui-accent-hover);
+}
+
+.thumb:active {
+  background-color: var(--ui-text);
+}
+
+@media print {
+  .track {
+    display: none !important;
+  }
+}

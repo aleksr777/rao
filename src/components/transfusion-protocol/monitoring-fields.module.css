@@ -1,0 +1,52 @@
+.root {
+  composes: ui-stack ui-full-width-stack from global;
+}
+
+.group {
+  composes: ui-fieldset from global;
+}
+
+.fields {
+  display: grid;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.vitals,
+.urine {
+  display: grid;
+  gap: 0.75rem 1rem;
+  min-width: 0;
+}
+
+.vitals {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 12rem) minmax(0, 10rem);
+  align-items: end;
+}
+
+.urine {
+  grid-template-columns: minmax(0, 10rem) minmax(0, 1fr);
+}
+
+.urine > label {
+  max-width: 10rem;
+}
+
+.legacyValue {
+  composes: ui-help-text from global;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 720px) {
+  .vitals {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .vitals > :first-child {
+    grid-column: 1 / -1;
+  }
+
+  .urine {
+    grid-template-columns: 1fr;
+  }
+}

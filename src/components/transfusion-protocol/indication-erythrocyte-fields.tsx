@@ -1,0 +1,115 @@
+import { FormInput } from '../form-input/form-input';
+import { ComponentCommonIndications } from './indication-common-fields';
+import { Choice, OtherChoice, type IndicationProps } from './indication-controls';
+import styles from './indications-fields.module.css';
+
+export const ErythrocyteIndications = ({ values, onChange }: IndicationProps) => {
+  const threshold = values.indicationRbcThreshold;
+  const thresholdSelected = threshold === 'custom' || threshold === '70-25';
+  const circulatoryDisturbances = values.indicationRbcCirculatoryDisturbances === '1';
+  const hemicHypoxia = values.indicationRbcHemicHypoxia === '1';
+  const anemicSyndrome = values.indicationRbcAnemicSyndrome === '1';
+  const hgb = values.indicationRbcHgb || '70';
+  const hct = values.indicationRbcHct || '25';
+
+  return (
+    <>
+      <ComponentCommonIndications
+        values={values}
+        onChange={onChange}
+        bloodLossName="indicationRbcBloodLoss"
+        bloodLossPercentName="indicationRbcBloodLossPercent"
+        ongoingBleedingName="indicationRbcOngoingBleeding"
+      />
+      <Choice
+        name="indicationRbcCirculatoryDisturbances"
+        checked={circulatoryDisturbances}
+        onChange={() =>
+          onChange({
+            indicationRbcCirculatoryDisturbances: circulatoryDisturbances ? '' : '1',
+          })
+        }
+      >
+        Циркуляторные нарушения
+      </Choice>
+      <Choice
+        name="indicationRbcHemicHypoxia"
+        checked={hemicHypoxia}
+        onChange={() =>
+          onChange({
+            indicationRbcHemicHypoxia: hemicHypoxia ? '' : '1',
+          })
+        }
+      >
+        Признаки гемической гипоксии
+      </Choice>
+      <Choice
+        name="indicationRbcAnemicSyndrome"
+        checked={anemicSyndrome}
+        onChange={() =>
+          onChange({
+            indicationRbcAnemicSyndrome: anemicSyndrome ? '' : '1',
+          })
+        }
+      >
+        Анемический синдром
+      </Choice>
+
+      <div className={styles.choiceRow}>
+        <Choice
+          name="indicationRbcThreshold"
+          checked={thresholdSelected}
+          onChange={() =>
+            onChange(
+              thresholdSelected
+                ? { indicationRbcThreshold: '' }
+                : {
+                    indicationRbcThreshold: 'custom',
+                    indicationRbcHgb: hgb,
+                    indicationRbcHct: hct,
+                  },
+            )
+          }
+        >
+          Снижение гемоглобина менее
+        </Choice>
+        <FormInput
+          className={styles.shortNumber}
+          type="number"
+          disabled={!thresholdSelected}
+          value={hgb}
+          onChange={(event) =>
+            onChange({
+              indicationRbcThreshold: 'custom',
+              indicationRbcHgb: event.target.value,
+              indicationRbcHct: hct,
+            })
+          }
+        />
+        <span>г/л и гематокрита менее</span>
+        <FormInput
+          className={styles.shortNumber}
+          type="number"
+          disabled={!thresholdSelected}
+          value={hct}
+          onChange={(event) =>
+            onChange({
+              indicationRbcThreshold: 'custom',
+              indicationRbcHgb: hgb,
+              indicationRbcHct: event.target.value,
+            })
+          }
+        />
+        <span>%</span>
+      </div>
+
+      <OtherChoice
+        checked={values.indicationRbcOther === '1'}
+        text={values.indicationRbcOtherText ?? ''}
+        name="indicationRbcOther"
+        label="Другие показания"
+        onChange={onChange}
+      />
+    </>
+  );
+};

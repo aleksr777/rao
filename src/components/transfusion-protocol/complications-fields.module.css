@@ -1,0 +1,24 @@
+.root {
+  composes: ui-stack ui-full-width-stack from global;
+}
+
+.statusGroup {
+  composes: ui-fieldset from global;
+}
+
+.options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem 1.5rem;
+}
+
+.option {
+  composes: ui-choice-label from global;
+}
+
+.details {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  min-width: 0;
+}

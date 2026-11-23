@@ -1,0 +1,53 @@
+.modal {
+  --modal-width: 58rem;
+}
+
+.root {
+  display: grid;
+  gap: 1rem;
+}
+
+.dependentFields {
+  display: grid;
+  gap: 1rem;
+  min-width: 0;
+  margin: 0;
+  border: 0;
+  padding: 0;
+  transition: opacity var(--ui-motion-fast) ease;
+}
+
+.dependentFields:disabled {
+  opacity: 0.58;
+}
+
+.localGrid {
+  composes: ui-form-grid from global;
+}
+
+.wide {
+  grid-column: 1 / -1;
+}
+
+.quantityField {
+  width: 9rem;
+  max-width: 100%;
+}
+
+.indicationsSection {
+  composes: ui-form-section from global;
+}
+
+.sectionTitle {
+  composes: ui-section-title from global;
+}
+
+@media (max-width: 680px) {
+  .localGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .wide {
+    grid-column: auto;
+  }
+}

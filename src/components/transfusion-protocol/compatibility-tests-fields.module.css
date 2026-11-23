@@ -1,0 +1,63 @@
+.root {
+  composes: ui-stack ui-full-width-stack from global;
+}
+
+.reagentList {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.reagentGrid {
+  display: grid;
+  grid-template-columns: minmax(8rem, 0.8fr) minmax(10rem, 0.9fr) minmax(14rem, 1.6fr);
+  gap: 0.8rem 1rem;
+  min-width: 0;
+}
+
+.results {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem 1rem;
+  min-width: 0;
+}
+
+.options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem 1.25rem;
+}
+
+.option {
+  composes: ui-choice-label from global;
+}
+
+@media (max-width: 720px) {
+  .reagentGrid,
+  .results {
+    grid-template-columns: 1fr;
+  }
+}
+
+.reagentWarning {
+  margin-top: 0.7rem;
+}
+
+.dangerOptionText {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.55rem;
+  border-radius: 0.4rem;
+  padding: 0.15rem 0.45rem;
+  background: var(--ui-danger-soft);
+  color: var(--ui-danger-text);
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.reagentGroup {
+  composes: ui-fieldset from global;
+}
+
+.resultGroup {
+  composes: ui-fieldset from global;
+}

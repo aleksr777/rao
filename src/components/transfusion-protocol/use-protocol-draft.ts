@@ -1,0 +1,115 @@
+import { useEffect, useState, type Dispatch, type SetStateAction } from 'react';
+import {
+  adoptCurrentRecipientFromValues,
+  mergeRecipientProfileValues,
+  readCurrentRecipient,
+  recipientProfileValuesForForms,
+} from '../../storage/repositories/current-recipient';
+import { loadProtocolDraft, saveProtocolDraft } from '../../storage/repositories/protocol-draft';
+import { clearRecipientLinkedValues } from '../../storage/repositories/recipient-linked-values';
+import { reagentDefaultsForNewBlank } from './reagent-defaults';
+import type { ProtocolValues } from './protocol-types';
+
+const hasValues = (values: ProtocolValues) => Object.keys(values).length > 0;
+
+type Props = {
+  values: ProtocolValues;
+  recordId: number | null;
+  setValues: Dispatch<SetStateAction<ProtocolValues>>;
+  setRecordId: Dispatch<SetStateAction<number | null>>;
+  onSavedDraft?: (id: number, values: ProtocolValues) => void;
+};
+
+export const useProtocolDraft = ({
+  values,
+  recordId,
+  setValues,
+  setRecordId,
+  onSavedDraft,
+}: Props) => {
+  const [loaded, setLoaded] = useState(false);
+  const [lastInputAt, setLastInputAt] = useState(0);
+
+  useEffect(() => {
+    let active = true;
+    void loadProtocolDraft()
+      .then((draft) => {
+        if (!active) return;
+        if (draft.protocolRecordId !== null) {
+          if (onSavedDraft) {
+            onSavedDraft(draft.protocolRecordId, draft.values);
+            const recipient = readCurrentRecipient();
+            setValues({
+              ...(recipient ? recipientProfileValuesForForms(recipient) : {}),
+              ...reagentDefaultsForNewBlank({}),
+            });
+            setRecordId(null);
+            setLastInputAt(Date.now());
+          } else {
+            setValues(draft.values);
+            setRecordId(draft.protocolRecordId);
+          }
+          return;
+        }
+        if (Object.keys(draft.values).length > 0) {
+          const draftValues = { ...draft.values, ...reagentDefaultsForNewBlank(draft.values) };
+          const currentRecipient = readCurrentRecipient();
+          if (!currentRecipient) {
+            adoptCurrentRecipientFromValues(draftValues);
+            setValues(draftValues);
+          } else {
+            const previousRecipientId = Number(draftValues.recipientId);
+            const recipientChanged =
+              Number.isFinite(previousRecipientId) &&
+              previousRecipientId > 0 &&
+              previousRecipientId !== currentRecipient.id;
+            const baseValues = recipientChanged
+              ? clearRecipientLinkedValues(draftValues, previousRecipientId)
+              : draftValues;
+            setValues(mergeRecipientProfileValues(baseValues, currentRecipient));
+          }
+          setRecordId(null);
+          setLastInputAt(draft.updatedAt);
+          return;
+        }
+
+        const currentRecipient = readCurrentRecipient();
+        if (currentRecipient) {
+          setValues({
+            ...recipientProfileValuesForForms(currentRecipient),
+            ...reagentDefaultsForNewBlank({}),
+          });
+          setRecordId(null);
+          setLastInputAt(Date.now());
+          return;
+        }
+
+        const reagentDefaults = reagentDefaultsForNewBlank({});
+        setValues(reagentDefaults);
+        setRecordId(null);
+        setLastInputAt(
+          Object.values(reagentDefaults).some((value) => value.trim()) ? Date.now() : 0,
+        );
+      })
+      .catch((error: unknown) => console.error('Не удалось загрузить бланк:', error))
+      .finally(() => active && setLoaded(true));
+
+    return () => {
+      active = false;
+    };
+  }, [setRecordId, setValues, onSavedDraft]);
+
+  useEffect(() => {
+    if (!loaded || !hasValues(values) || !lastInputAt) return;
+    void saveProtocolDraft({
+      values,
+      protocolRecordId: recordId,
+      updatedAt: lastInputAt,
+    }).catch((error: unknown) => console.error('Не удалось сохранить черновик:', error));
+  }, [lastInputAt, loaded, recordId, values]);
+
+  return {
+    touch: () => setLastInputAt(Date.now()),
+    reset: () => setLastInputAt(0),
+  };
+};
