@@ -1,0 +1,187 @@
+import type { DatabaseRequest, DatabaseResponse } from './database-types';
+import { getDatabase } from './database';
+import { DatabaseError } from './database-errors';
+import {
+  importDepartments,
+  listDepartments,
+  rememberDepartment,
+  removeDepartment,
+  renameDepartment,
+} from './department-store';
+import {
+  listSavedOptions,
+  rememberSavedOption,
+  removeSavedOption,
+  renameSavedOption,
+} from './saved-option-store';
+import { clearProtocolDraft, loadProtocolDraft, saveProtocolDraft } from './protocol-draft-store';
+import { resetWorkingDrafts } from './working-draft-store';
+import {
+  listProtocolRecords,
+  removeProtocolRecord,
+  saveProtocolRecord,
+} from './protocol-record-store';
+import { createRecipient } from './recipient-create-store';
+import {
+  clearRegistrationDraft,
+  loadRegistrationDraft,
+  saveRegistrationDraft,
+} from './registration-draft-store';
+import {
+  listRegistrationRecords,
+  removeRegistrationRecord,
+  saveRegistrationRecord,
+} from './registration-record-store';
+import {
+  listBloodRequestRecords,
+  removeBloodRequestRecord,
+  saveBloodRequestRecord,
+} from './blood-request-record-store';
+import {
+  findRecipientsByName,
+  getRecipientById,
+  removeRecipient,
+  searchRecipients,
+  updateRecipient,
+} from './recipient-store';
+
+const dispatchRequest = async (request: DatabaseRequest) => {
+  switch (request.action) {
+    case 'init':
+      await getDatabase((progress) => send({ id: request.id, ok: true, progress }));
+      return true;
+    case 'departments:list':
+      return listDepartments();
+    case 'departments:remember':
+      return rememberDepartment((request.payload as { name: string }).name);
+    case 'departments:rename': {
+      const payload = request.payload as { id: number; name: string };
+      return renameDepartment(payload.id, payload.name);
+    }
+    case 'departments:remove':
+      return removeDepartment((request.payload as { id: number }).id);
+    case 'departments:import':
+      return importDepartments((request.payload as { names: string[] }).names);
+    case 'saved-options:list':
+      return listSavedOptions((request.payload as { category: string }).category);
+    case 'saved-options:remember': {
+      const payload = request.payload as { category: string; value: string };
+      return rememberSavedOption(payload.category, payload.value);
+    }
+    case 'saved-options:rename': {
+      const payload = request.payload as { category: string; id: number; value: string };
+      return renameSavedOption(payload.category, payload.id, payload.value);
+    }
+    case 'saved-options:remove': {
+      const payload = request.payload as { category: string; id: number };
+      return removeSavedOption(payload.category, payload.id);
+    }
+    case 'working-drafts:reset':
+      return resetWorkingDrafts();
+    case 'protocol-draft:load':
+      return loadProtocolDraft();
+    case 'protocol-draft:save':
+      return saveProtocolDraft(
+        (request.payload as { state: Parameters<typeof saveProtocolDraft>[0] }).state,
+      );
+    case 'protocol-draft:clear':
+      return clearProtocolDraft();
+    case 'registration-draft:load':
+      return loadRegistrationDraft();
+    case 'registration-draft:save':
+      return saveRegistrationDraft(
+        (request.payload as { state: Parameters<typeof saveRegistrationDraft>[0] }).state,
+      );
+    case 'registration-draft:clear':
+      return clearRegistrationDraft();
+    case 'recipients:search':
+      return searchRecipients((request.payload as { query: string }).query);
+    case 'recipients:get':
+      return getRecipientById((request.payload as { id: number }).id);
+    case 'recipients:find-name':
+      return findRecipientsByName((request.payload as { fullName: string }).fullName);
+    case 'recipients:create': {
+      const payload = request.payload as { fullName: string; values?: Record<string, string> };
+      return createRecipient(payload.fullName, payload.values);
+    }
+    case 'recipients:update': {
+      const payload = request.payload as {
+        id: number;
+        values: Record<string, string>;
+      };
+      return updateRecipient(payload.id, payload.values);
+    }
+    case 'recipients:remove':
+      return removeRecipient((request.payload as { id: number }).id);
+    case 'protocol-records:list':
+      return listProtocolRecords((request.payload as { recipientId: number }).recipientId);
+    case 'protocol-records:save': {
+      const payload = request.payload as {
+        values: Record<string, string>;
+        recordId?: number;
+      };
+      return saveProtocolRecord(payload.values, payload.recordId);
+    }
+    case 'protocol-records:remove':
+      return removeProtocolRecord((request.payload as { id: number }).id);
+    case 'registration-records:list':
+      return listRegistrationRecords((request.payload as { recipientId: number }).recipientId);
+    case 'registration-records:save': {
+      const payload = request.payload as {
+        values: Record<string, string>;
+        recordId?: number;
+      };
+      return saveRegistrationRecord(payload.values, payload.recordId);
+    }
+    case 'registration-records:remove':
+      return removeRegistrationRecord((request.payload as { id: number }).id);
+    case 'blood-request-records:list': {
+      const payload = request.payload as {
+        recipientId: number;
+        kind: 'individual-selection-direction' | 'component-request';
+      };
+      return listBloodRequestRecords(payload.recipientId, payload.kind);
+    }
+    case 'blood-request-records:save': {
+      const payload = request.payload as {
+        recipientId: number;
+        recordId?: number;
+        kind: 'individual-selection-direction' | 'component-request';
+        values: Record<string, unknown>;
+      };
+      return saveBloodRequestRecord(payload);
+    }
+    case 'blood-request-records:remove':
+      return removeBloodRequestRecord((request.payload as { id: number }).id);
+  }
+};
+
+let requestQueue: Promise<void> = Promise.resolve();
+
+const handleRequest = <T>(callback: () => Promise<T>) => {
+  const run = requestQueue.then(callback, callback);
+  requestQueue = run.then(
+    () => undefined,
+    () => undefined,
+  );
+  return run;
+};
+
+const send = (response: DatabaseResponse) => {
+  const scope = globalThis as unknown as { postMessage: (message: DatabaseResponse) => void };
+  scope.postMessage(response);
+};
+
+globalThis.addEventListener('message', (event: MessageEvent<DatabaseRequest>) => {
+  void handleRequest(() => dispatchRequest(event.data))
+    .then((result) => send({ id: event.data.id, ok: true, result }))
+    .catch((error: unknown) => {
+      const message = error instanceof Error ? error.message : String(error);
+      send({
+        id: event.data.id,
+        ok: false,
+        error: message,
+        errorCode: error instanceof DatabaseError ? error.code : undefined,
+      });
+    });
+});

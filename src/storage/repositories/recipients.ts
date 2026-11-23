@@ -1,0 +1,54 @@
+import { database } from '../sqlite/database-client';
+import type { ProtocolValuesRecord } from '../sqlite/database-types';
+
+export const searchRecipients = (query = '') => database.searchRecipients(query);
+
+export const getRecipientById = (id: number) => database.getRecipientById(id);
+
+export const findRecipientsByName = (fullName: string) => database.findRecipientsByName(fullName);
+
+export const createRecipient = (fullName: string, values: ProtocolValuesRecord = {}) =>
+  database.createRecipient(fullName, values);
+
+export const updateRecipient = (id: number, values: ProtocolValuesRecord) =>
+  database.updateRecipient(id, values);
+
+export const removeRecipient = (id: number) => database.removeRecipient(id);
+
+export const listProtocolRecords = (recipientId: number) =>
+  database.listProtocolRecords(recipientId);
+
+export const removeProtocolRecord = (id: number) => database.removeProtocolRecord(id);
+
+export const saveProtocolRecord = (values: ProtocolValuesRecord) =>
+  database.saveProtocolRecord(values);
+export const updateProtocolRecord = (id: number, values: ProtocolValuesRecord) =>
+  database.updateProtocolRecord(id, values);
+
+export const listRegistrationRecords = (recipientId: number) =>
+  database.listRegistrationRecords(recipientId);
+
+export const saveRegistrationRecord = (values: ProtocolValuesRecord) =>
+  database.saveRegistrationRecord(values);
+export const updateRegistrationRecord = (id: number, values: ProtocolValuesRecord) =>
+  database.updateRegistrationRecord(id, values);
+
+export const removeRegistrationRecord = (id: number) => database.removeRegistrationRecord(id);
+
+export const listBloodRequestRecords = (
+  recipientId: number,
+  kind: import('../sqlite/database-types').BloodRequestRecordKind,
+) => database.listBloodRequestRecords(recipientId, kind);
+
+export const saveBloodRequestRecord = (
+  input: import('../sqlite/database-types').SaveBloodRequestRecordInput,
+) => database.saveBloodRequestRecord(input);
+
+export const removeBloodRequestRecord = (id: number) => database.removeBloodRequestRecord(id);
+
+export type {
+  BloodRequestRecord,
+  ProtocolRecord,
+  RecipientRecord,
+  RegistrationRecord,
+} from '../sqlite/database-types';

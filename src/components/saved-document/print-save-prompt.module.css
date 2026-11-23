@@ -1,0 +1,17 @@
+.modal {
+  --modal-width: 28rem;
+}
+
+.message {
+  composes: ui-body-text from global;
+  margin: 0;
+  text-wrap: pretty;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.65rem;
+  margin-top: 1.25rem;
+}

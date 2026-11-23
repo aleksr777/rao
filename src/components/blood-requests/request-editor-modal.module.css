@@ -1,0 +1,21 @@
+.modal {
+  --modal-width: 58rem;
+}
+
+.grid {
+  composes: ui-form-grid from global;
+}
+
+.wide {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 680px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .wide {
+    grid-column: auto;
+  }
+}

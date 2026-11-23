@@ -1,0 +1,39 @@
+.modal {
+  --modal-width: 52rem;
+}
+
+.grid {
+  composes: ui-form-grid from global;
+  min-width: 0;
+  margin: 0;
+  border: 0;
+  padding: 0;
+}
+
+.error {
+  margin-top: 0.8rem;
+  color: var(--ui-danger-text);
+  font-size: var(--ui-font-small);
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.65rem;
+  margin-top: 1.25rem;
+}
+
+.primary {
+  composes: ui-button ui-primary-button from global;
+}
+
+.secondary {
+  composes: ui-button ui-secondary-button from global;
+}
+
+@media (max-width: 680px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+}

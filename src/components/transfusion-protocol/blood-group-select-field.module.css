@@ -1,0 +1,66 @@
+.field {
+  min-width: 0;
+}
+
+.label {
+  composes: ui-field-label from global;
+}
+
+.antigenLabel {
+  min-height: 1.15rem;
+  margin-bottom: 0.35rem;
+  color: var(--ui-text-muted);
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+}
+
+.antigenField {
+  border: 1px solid var(--ui-border);
+  border-radius: 0.65rem;
+  padding: 0.5rem 0.4rem 0.4rem;
+  background: var(--ui-surface);
+}
+
+.antigenField[data-tone='positive'] {
+  border-color: var(--blood-red-border);
+  background: var(--blood-red-surface);
+}
+
+.antigenField[data-tone='positive'] .antigenLabel {
+  color: var(--blood-red-text);
+}
+
+.antigenField[data-tone='negative'] {
+  border-color: var(--blood-blue-border);
+  background: var(--blood-blue-surface);
+}
+
+.antigenField[data-tone='negative'] .antigenLabel {
+  color: var(--blood-blue-text);
+}
+
+.antigenField[data-tone='positive'] [aria-haspopup='listbox'] {
+  --select-background: var(--blood-red-option-selected);
+  --select-border: var(--blood-red-text);
+  --select-hover-background: var(--blood-red-option-selected);
+  --select-hover-border: var(--blood-red-text);
+}
+
+.antigenField[data-tone='negative'] [aria-haspopup='listbox'] {
+  --select-background: var(--blood-blue-option-selected);
+  --select-border: var(--blood-blue-text);
+  --select-hover-background: var(--blood-blue-option-selected);
+  --select-hover-border: var(--blood-blue-text);
+}
+
+.antigenField [aria-haspopup='listbox'] {
+  grid-template-columns: minmax(0, 1fr) 1.25rem;
+}
+
+.antigenField [aria-haspopup='listbox'] > span:first-child {
+  padding-right: 0;
+  padding-left: 1.25rem;
+  text-align: center;
+}

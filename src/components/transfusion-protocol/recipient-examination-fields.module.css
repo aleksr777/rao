@@ -1,0 +1,66 @@
+.root {
+  composes: ui-stack ui-full-width-stack from global;
+}
+
+.topGrid {
+  composes: ui-form-grid from global;
+}
+
+.antigenGrid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.groupTitle {
+  composes: ui-field-label from global;
+  margin-bottom: -0.55rem;
+}
+
+.antibodies {
+  composes: ui-fieldset from global;
+}
+
+.radioGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.5rem;
+}
+
+.radio {
+  composes: ui-choice-label from global;
+}
+
+.description {
+  composes: ui-field-label from global;
+  display: flex;
+  margin-top: 0.8rem;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.description textarea {
+  overflow-y: auto;
+}
+
+@media (max-width: 720px) {
+  .antigenGrid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .topGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .antigenGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 360px) {
+  .antigenGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

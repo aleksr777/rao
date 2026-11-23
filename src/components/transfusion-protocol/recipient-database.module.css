@@ -1,0 +1,256 @@
+.modal {
+  --modal-width: 64rem;
+}
+
+.body {
+  display: grid;
+  grid-template-columns: minmax(16rem, 0.8fr) minmax(22rem, 1.2fr);
+  gap: 1rem;
+  height: min(42rem, calc(100dvh - 10rem));
+  min-height: 0;
+  overflow: hidden;
+}
+
+.panel {
+  composes: ui-panel from global;
+  display: flex;
+  min-height: 0;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.listHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.45rem;
+}
+
+.label {
+  composes: ui-field-label from global;
+  display: block;
+  margin-bottom: 0;
+}
+
+.search {
+  min-width: 0;
+}
+
+.list,
+.records {
+  display: grid;
+  grid-auto-rows: max-content;
+  min-height: 0;
+  flex: 1 1 auto;
+  align-content: start;
+  gap: 0.45rem;
+  margin-top: 0.75rem;
+  padding-right: 0.25rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+
+.person {
+  composes: ui-selectable-card from global;
+  width: 100%;
+  padding: 0;
+  cursor: default;
+}
+
+.personSelect {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  border-radius: inherit;
+  padding: 0.75rem 0.85rem;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+}
+
+.personSelect:focus-visible {
+  outline: 2px solid var(--ui-accent);
+  outline-offset: -2px;
+}
+
+.personActions {
+  display: flex;
+  padding: 0 0.85rem 0.75rem;
+}
+
+.personName {
+  display: block;
+  font-weight: 700;
+}
+
+.meta,
+.empty {
+  margin-top: 0.2rem;
+  color: var(--ui-text-muted);
+  font-size: var(--ui-font-small);
+}
+
+.header {
+  composes: ui-panel from global;
+  display: flex;
+  flex: 0 0 auto;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  background: var(--ui-surface-soft);
+  flex-wrap: wrap;
+}
+
+.title {
+  margin: 0;
+  font-size: var(--ui-font-section);
+  overflow-wrap: anywhere;
+}
+
+.headerActions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.4rem;
+}
+
+.createRecipient {
+  composes: ui-button ui-secondary-button ui-compact-button from global;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.secondaryAction {
+  composes: ui-button ui-secondary-button ui-compact-button from global;
+}
+
+.cancelSelection {
+  composes: ui-button ui-secondary-button ui-compact-button from global;
+}
+
+.dangerAction {
+  composes: ui-button ui-danger-button ui-compact-button from global;
+}
+
+.categories {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.categoryButton {
+  composes: ui-selectable-card from global;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0.45rem;
+}
+
+.categoryTitle {
+  font-size: var(--ui-font-section);
+  font-weight: 700;
+  line-height: var(--ui-line-height);
+}
+
+.categoryMeta {
+  color: var(--ui-text-muted);
+  font-size: var(--ui-font-small);
+  font-weight: 400;
+}
+
+.categoryHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-top: 1rem;
+  padding-bottom: 0.65rem;
+  border-bottom: 1px solid var(--ui-border);
+}
+
+.categoryBack {
+  composes: ui-button ui-secondary-button ui-compact-button from global;
+}
+
+.categoryHeading {
+  min-width: 0;
+  color: var(--ui-text-strong);
+  font-size: var(--ui-font-section);
+  font-weight: 700;
+}
+
+.records {
+  margin-top: 1rem;
+}
+
+.recordCard {
+  composes: ui-selectable-card from global;
+  display: grid;
+  min-width: 0;
+  padding: 0;
+  cursor: default;
+}
+
+.recordCardSummary {
+  min-width: 0;
+  border-radius: inherit;
+  padding: 0.75rem 0.85rem;
+  cursor: pointer;
+}
+
+.recordCardSummary:focus-visible {
+  outline: 2px solid var(--ui-accent);
+  outline-offset: -2px;
+}
+
+.recordActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  padding: 0 0.85rem 0.75rem;
+}
+
+.recordDelete {
+  composes: ui-button ui-danger-button ui-compact-button from global;
+}
+
+@media (max-width: 760px) {
+  .body {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+    height: auto;
+    overflow: visible;
+  }
+
+  .list {
+    max-height: 12rem;
+  }
+
+  .records {
+    max-height: 24rem;
+  }
+
+  .categories {
+    grid-template-columns: 1fr;
+  }
+
+  .categoryHeader {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+.action {
+  composes: ui-button ui-primary-button ui-compact-button from global;
+}
+
+.open {
+  composes: ui-button ui-primary-button ui-compact-button from global;
+}

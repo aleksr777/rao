@@ -1,0 +1,36 @@
+.modal {
+  --modal-width: 34rem;
+}
+
+.text {
+  composes: ui-body-text from global;
+}
+
+.warning,
+.error {
+  margin-top: 0.7rem;
+  font-size: var(--ui-font-small);
+}
+
+.warning {
+  composes: ui-help-text from global;
+}
+
+.error {
+  color: var(--ui-danger-text);
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.65rem;
+  margin-top: 1.3rem;
+}
+
+.secondary {
+  composes: ui-button ui-secondary-button from global;
+}
+
+.danger {
+  composes: ui-button ui-danger-primary-button from global;
+}

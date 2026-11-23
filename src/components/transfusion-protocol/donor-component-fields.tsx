@@ -1,0 +1,43 @@
+import type { ComponentProps } from 'react';
+import {
+  BLOOD_COMPONENTS,
+  componentGroupChanges,
+  selectedBloodComponentGroup,
+} from '../../domain/blood-components';
+import { BloodComponentSelector } from '../blood-component-selector/blood-component-selector';
+import { DonorDetailsFields } from './donor-details-fields';
+import { IndicationsFields } from './indications-fields';
+import styles from './protocol-editor.module.css';
+
+export const DonorComponentFields = (props: ComponentProps<typeof DonorDetailsFields>) => {
+  const { values, onChange } = props;
+  const group = selectedBloodComponentGroup(values, values.componentName);
+  const hasComponentGroup = BLOOD_COMPONENTS.some(({ value }) => value === group);
+
+  return (
+    <>
+      <BloodComponentSelector
+        group={group}
+        name={values.componentName ?? ''}
+        lastSelectedGroup={values.lastSelectedComponentGroup}
+        onChange={({ group, name }) => onChange(componentGroupChanges(values, group, name))}
+      />
+      <fieldset
+        className={`${styles.grid} ${styles.componentDependentFields}`}
+        disabled={!hasComponentGroup}
+        data-component-dependent
+      >
+        <section className={styles.section} aria-label="Показания к трансфузии">
+          <h3 className={styles.sectionTitle}>Показания к трансфузии</h3>
+          <IndicationsFields values={values} onChange={onChange} showComponentSelector={false} />
+        </section>
+        <section className={styles.section} aria-label="Данные гемакона">
+          <h3 className={styles.sectionTitle}>Данные гемакона</h3>
+          <div className={styles.grid}>
+            <DonorDetailsFields {...props} />
+          </div>
+        </section>
+      </fieldset>
+    </>
+  );
+};

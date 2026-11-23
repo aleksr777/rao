@@ -1,0 +1,95 @@
+import { BLOOD_COMPONENTS, getBloodComponentNameCategory } from '../../domain/blood-components';
+import { SavedOptionsField } from '../transfusion-protocol/saved-options-field';
+import { CodedComponentField } from './coded-component-field';
+import type { CodedComponent } from '../../domain/coded-component';
+import styles from './blood-component-selector.module.css';
+
+export type BloodComponentSelection = { group: string; name: string };
+
+type Props = BloodComponentSelection & {
+  inputName?: string;
+  fixedGroup?: string;
+  lastSelectedGroup?: string;
+  showName?: boolean;
+  catalogOptions?: readonly CodedComponent[];
+  selectedCode?: string;
+  onCodedChange?: (component: CodedComponent) => void;
+  onChange: (selection: BloodComponentSelection) => void;
+};
+
+export const BloodComponentSelector = ({
+  group,
+  name,
+  inputName = 'componentName',
+  fixedGroup,
+  lastSelectedGroup,
+  showName = true,
+  catalogOptions,
+  selectedCode,
+  onCodedChange,
+  onChange,
+}: Props) => {
+  const selectedGroup = fixedGroup || group;
+  const selected = BLOOD_COMPONENTS.find(({ value }) => value === selectedGroup);
+  const category = getBloodComponentNameCategory(selectedGroup);
+  const components = fixedGroup
+    ? BLOOD_COMPONENTS.filter(({ value }) => value === fixedGroup)
+    : BLOOD_COMPONENTS;
+
+  return (
+    <fieldset className={styles.root} data-blood-component-selector>
+      <legend>Группа компонентов крови</legend>
+      <div className={styles.choices} data-fixed={Boolean(fixedGroup)}>
+        {components.map(({ value, label }) => (
+          <button
+            key={value}
+            type="button"
+            className={styles.choice}
+            data-component={value}
+            aria-pressed={selectedGroup === value}
+            disabled={Boolean(fixedGroup)}
+            onClick={() =>
+              onChange({
+                group: value === selectedGroup ? '' : value,
+                name:
+                  value === selectedGroup || (!selectedGroup && lastSelectedGroup === value)
+                    ? name
+                    : '',
+              })
+            }
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+      {showName && selected && category && (
+        <div className={styles.name}>
+          {catalogOptions ? (
+            <CodedComponentField
+              group={selectedGroup}
+              inputName={inputName}
+              code={selectedCode ?? ''}
+              name={name}
+              options={catalogOptions}
+              onChange={(component) => onCodedChange?.(component)}
+            />
+          ) : (
+            <>
+              <div className={styles.label}>Наименование компонента донорской крови</div>
+              <SavedOptionsField
+                key={category}
+                name={inputName}
+                label="Наименование компонента донорской крови"
+                category={category}
+                fixedOptions={[...selected.names]}
+                value={name}
+                wrapOptions
+                onChange={(nextName) => onChange({ group: selectedGroup, name: nextName })}
+              />
+            </>
+          )}
+        </div>
+      )}
+    </fieldset>
+  );
+};

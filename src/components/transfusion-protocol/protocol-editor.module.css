@@ -1,0 +1,497 @@
+.small {
+  --modal-width: 30rem;
+}
+
+.medium {
+  --modal-width: 42rem;
+}
+
+.large {
+  --modal-width: 52rem;
+}
+
+.xlarge {
+  --modal-width: 64rem;
+}
+
+.grid {
+  composes: ui-form-grid from global;
+}
+
+.componentDependentFields {
+  grid-column: 1 / -1;
+  min-width: 0;
+  width: 100%;
+  margin: 0;
+  border: 0;
+  padding: 0;
+  transition: opacity var(--ui-motion-fast) ease;
+}
+
+.componentDependentFields:disabled {
+  opacity: 0.58;
+}
+
+.fieldLabel {
+  composes: ui-field-label from global;
+}
+
+.wide {
+  grid-column: 1 / -1;
+}
+
+.sectionTitle {
+  composes: ui-section-title from global;
+}
+
+.section {
+  composes: ui-form-section from global;
+  grid-column: 1 / -1;
+}
+
+.generalGroup {
+  composes: ui-fieldset from global;
+  grid-column: 1 / -1;
+}
+
+.generalGroupGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem 1.1rem;
+}
+
+.generalGroupGrid.transfusionGrid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+@media (max-width: 680px) {
+  .generalGroupGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .generalGroupGrid.transfusionGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .generalGroupGrid .wide {
+    grid-column: auto;
+  }
+}
+
+.departmentField {
+  position: relative;
+  min-width: 0;
+}
+
+.departmentControl {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.departmentControl > input {
+  min-width: 0;
+}
+
+.departmentControl > input[readonly]:not(:disabled) {
+  background: var(--ui-surface);
+  color: var(--ui-text-strong);
+}
+
+.departmentControl > input:has(+ .historyToggle) {
+  border-radius: var(--control-radius) 0 0 var(--control-radius);
+}
+
+.historyToggle {
+  align-self: center;
+  width: var(--button-height);
+  height: var(--button-height);
+  min-height: var(--button-height);
+  border: 1px solid var(--control-border);
+  border-left: 0;
+  border-radius: 0 var(--control-radius) var(--control-radius) 0;
+  background: var(--ui-surface);
+  color: var(--ui-text-muted);
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.historyToggle:focus-visible {
+  background: var(--ui-surface-soft);
+  color: var(--ui-accent);
+}
+
+.historyToggle:disabled {
+  background: var(--ui-disabled-background);
+  color: var(--ui-text-disabled);
+  cursor: default;
+}
+
+.historyDropdown {
+  composes: ui-menu-surface from global;
+  --dropdown-motion-duration: 120ms;
+  --dropdown-motion-easing: cubic-bezier(0.2, 0.7, 0.2, 1);
+
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + 0.3rem);
+  right: 0;
+  left: 0;
+  display: grid;
+  gap: 0.1rem;
+  --dropdown-natural-max-height: 12rem;
+
+  max-height: min(var(--dropdown-natural-max-height), var(--dropdown-viewport-max-height, 100dvh));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: var(--ui-scrollbar-thumb) var(--ui-surface-hover);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-0.35rem) scale(0.985);
+  transform-origin: top center;
+  pointer-events: none;
+  transition:
+    opacity var(--dropdown-motion-duration) var(--dropdown-motion-easing),
+    transform var(--dropdown-motion-duration) var(--dropdown-motion-easing),
+    visibility 0s linear var(--dropdown-motion-duration);
+}
+
+.historyDropdownCompact {
+  right: auto;
+  left: 50%;
+  min-width: 7.5rem;
+  translate: -50% 0;
+  --dropdown-natural-max-height: 8rem;
+
+  font-size: 0.78rem;
+}
+
+.departmentField[data-dropdown-placement='above'] .historyDropdown {
+  top: auto;
+  bottom: calc(100% + 0.3rem);
+  transform-origin: bottom center;
+}
+
+.historyDropdownCompact .customSelectOption {
+  padding: 0.2rem 0.4rem;
+  white-space: nowrap;
+}
+
+.historyDropdown[data-state='open'] {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+  transition:
+    opacity var(--dropdown-motion-duration) var(--dropdown-motion-easing),
+    transform var(--dropdown-motion-duration) var(--dropdown-motion-easing),
+    visibility 0s;
+}
+
+.historyRow {
+  --history-action-size: 26px;
+
+  display: grid;
+  grid-template-columns: repeat(2, var(--history-action-size)) minmax(0, 1fr);
+  align-items: center;
+  gap: 0.15rem;
+  min-height: var(--button-height);
+}
+
+.historyRow > :only-child {
+  grid-column: 1 / -1;
+}
+
+.historyFixedRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  min-height: var(--button-height);
+}
+
+.historyValue {
+  composes: ui-menu-item from global;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
+}
+
+.historyDropdownWrap .historyValue {
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+.historyInput {
+  border-radius: var(--ui-radius-small);
+  padding: 0.3rem 0.5rem;
+  font-size: 0.84rem;
+}
+
+.historyEdit,
+.historyDelete,
+.historySave {
+  width: var(--history-action-size);
+  height: var(--history-action-size);
+  min-height: var(--history-action-size);
+  border: 1px solid currentColor;
+  border-radius: var(--ui-radius-small);
+  background: var(--ui-surface);
+  font-size: 0.85rem;
+  transition:
+    background-color var(--ui-motion-fast) ease,
+    color var(--ui-motion-fast) ease;
+}
+
+.historySave {
+  composes: ui-icon-button ui-success-icon from global;
+  color: color-mix(in srgb, var(--ui-success-text) 75%, var(--ui-surface));
+  font-weight: 700;
+}
+
+.historySave:hover,
+.historySave:focus-visible {
+  background: var(--ui-success-soft);
+  color: var(--ui-success-text);
+}
+
+.historyEmpty {
+  padding: 0.45rem 0.55rem;
+  color: var(--ui-text-muted);
+  font-size: 0.82rem;
+  font-weight: 400;
+}
+
+.customSelectControl {
+  --select-background: var(--ui-surface);
+  --select-border: var(--control-border);
+  --select-text: var(--ui-text);
+  --select-hover-background: var(--ui-surface-soft);
+  --select-hover-border: var(--blood-blue-hover-border);
+  --select-focus: var(--ui-accent);
+
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--button-height);
+  align-items: center;
+  width: 100%;
+  min-height: var(--button-height);
+  border: 1px solid var(--select-border);
+  border-radius: var(--control-radius);
+  padding: 0;
+  background: var(--select-background);
+  color: var(--select-text);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 500;
+  text-align: left;
+}
+
+.customSelectControlCompact {
+  grid-template-columns: minmax(0, 1fr) 1.55rem;
+  border-radius: 0.4rem;
+  font-size: 0.78rem;
+}
+
+.customSelectControlCompact .customSelectValue,
+.customSelectControlCompact .customSelectPlaceholder {
+  padding: 0.2rem 0.4rem;
+}
+
+.customSelectControlCompact .customSelectArrow {
+  font-size: 0.7rem;
+}
+
+.customSelectControlRhPositive {
+  --select-background: var(--blood-red-background);
+  --select-border: var(--blood-red-border);
+  --select-text: var(--blood-red-text);
+  --select-hover-background: var(--blood-red-hover);
+  --select-hover-border: var(--blood-red-hover-border);
+  --select-focus: var(--blood-red-text);
+}
+
+.customSelectControlRhNegative {
+  --select-background: var(--blood-blue-background);
+  --select-border: var(--blood-blue-border);
+  --select-text: var(--blood-blue-text);
+  --select-hover-background: var(--blood-blue-hover);
+  --select-hover-border: var(--blood-blue-hover-border);
+  --select-focus: var(--blood-blue-text);
+}
+
+.customSelectControlRhPositive[data-blood-group='true'] {
+  --select-background: var(--blood-rh-positive-background);
+  --select-border: var(--blood-rh-positive-border);
+  --select-text: var(--blood-rh-positive-text);
+  --select-hover-background: var(--blood-rh-positive-background);
+  --select-hover-border: var(--blood-rh-positive-hover-border);
+  --select-focus: var(--ui-accent);
+}
+
+.customSelectControlRhNegative[data-blood-group='true'] {
+  --select-background: var(--blood-rh-negative-background);
+  --select-border: var(--ui-text);
+  --select-divider: var(--blood-rh-negative-divider);
+  --select-text: var(--blood-rh-negative-text);
+  --select-hover-background: var(--blood-rh-negative-hover);
+  --select-hover-border: var(--blood-rh-negative-hover);
+  --select-focus: var(--ui-accent);
+}
+
+.customSelectControlNeutral {
+  --select-background: var(--ui-disabled-background);
+  --select-border: var(--ui-border);
+  --select-text: var(--ui-text-muted);
+  --select-hover-background: var(--ui-surface-hover);
+  --select-hover-border: var(--ui-text-disabled);
+}
+
+.customSelectControl:hover {
+  border-color: var(--select-hover-border);
+  background: var(--select-hover-background);
+}
+
+.customSelectControl[aria-expanded='true'] {
+  border-color: var(--select-focus);
+}
+
+.customSelectControl:focus-visible {
+  outline: 2px solid var(--select-focus);
+  outline-offset: 2px;
+}
+
+.customSelectValue,
+.customSelectPlaceholder {
+  min-width: 0;
+  padding: var(--button-padding-y) var(--control-padding-x);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.customSelectPlaceholder {
+  color: var(--ui-text-muted);
+}
+
+.customSelectPositive,
+.customSelectNegative {
+  font-size: 1.2rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.customSelectPositive {
+  color: var(--blood-red-text);
+}
+
+.customSelectNegative {
+  color: var(--blood-blue-text);
+}
+
+.customSelectArrow {
+  display: flex;
+  align-self: stretch;
+  align-items: center;
+  justify-content: center;
+  border-left: 1px solid var(--select-divider, var(--select-border));
+  color: inherit;
+}
+
+.customSelectOption {
+  composes: ui-menu-item from global;
+  --option-background: transparent;
+  --option-text: var(--ui-text);
+  --option-hover-background: var(--ui-accent-soft);
+  --option-selected-background: var(--blood-blue-hover);
+  --option-accent: var(--ui-accent);
+}
+
+.customSelectOption[aria-selected='true'] {
+  border-color: var(--option-accent);
+  background: var(--option-selected-background);
+  font-weight: 600;
+}
+
+.customSelectOptionPositive,
+.customSelectOptionNegative {
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.customSelectOptionPositive {
+  --option-background: var(--blood-red-background);
+  --option-text: var(--blood-red-text);
+  --option-hover-background: var(--blood-red-hover);
+  --option-selected-background: var(--blood-red-option-selected);
+  --option-accent: var(--blood-red-text);
+}
+
+.customSelectOptionNegative {
+  --option-background: var(--blood-blue-background);
+  --option-text: var(--blood-blue-text);
+  --option-hover-background: var(--blood-blue-hover);
+  --option-selected-background: var(--blood-blue-option-selected);
+  --option-accent: var(--blood-blue-text);
+}
+
+.customSelectOptionRhPositive,
+.customSelectOptionTonePositive {
+  --option-background: var(--blood-rh-positive-background);
+  --option-text: var(--blood-rh-positive-text);
+  --option-hover-background: var(--blood-rh-positive-background);
+  --option-selected-background: var(--blood-rh-positive-background);
+  --option-accent: var(--ui-accent);
+}
+
+.customSelectOptionRhNegative,
+.customSelectOptionToneNegative {
+  --option-background: var(--blood-rh-negative-background);
+  --option-text: var(--blood-rh-negative-text);
+  --option-hover-background: var(--blood-rh-negative-hover);
+  --option-selected-background: var(--blood-rh-negative-background);
+  --option-accent: var(--blood-rh-negative-accent);
+}
+
+.customSelectOptionToneNeutral,
+.customSelectOptionNeutralEmpty {
+  --option-background: var(--ui-disabled-background);
+  --option-text: var(--ui-text-muted);
+  --option-hover-background: var(--ui-surface-hover);
+  --option-selected-background: var(--ui-border);
+  --option-accent: var(--ui-text-muted);
+}
+
+.bloodGroupWarning {
+  grid-column: 1 / -1;
+}
+
+.componentUnitNumberField {
+  min-width: 0;
+}
+
+.fieldWarning {
+  margin-top: 0.45rem;
+}
+
+.historyEdit {
+  composes: ui-icon-button from global;
+  color: color-mix(in srgb, var(--ui-accent) 75%, var(--ui-surface));
+}
+
+.historyEdit:hover,
+.historyEdit:focus-visible {
+  background: var(--ui-surface-soft);
+  color: var(--ui-accent);
+}
+
+.historyDelete {
+  composes: ui-icon-button ui-danger-icon from global;
+  color: color-mix(in srgb, var(--ui-danger-text) 75%, var(--ui-surface));
+}
+
+.historyDelete:hover,
+.historyDelete:focus-visible {
+  background: var(--ui-danger-soft);
+  color: var(--ui-danger-text);
+}

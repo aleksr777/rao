@@ -1,0 +1,1116 @@
+:root {
+  font-family: Arial, Helvetica, sans-serif;
+  color: var(--ui-text-strong);
+  background: var(--ui-background);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* One switch for the entire site; form controls remain selectable in either mode. */
+html[data-text-selection='disabled'] * {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+html[data-text-selection='disabled'] input,
+html[data-text-selection='disabled'] textarea,
+html[data-text-selection='disabled'] [contenteditable='true'] {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+html {
+  background: var(--ui-background);
+  scrollbar-width: none;
+}
+
+html::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background: var(--ui-background);
+}
+
+.app-page-transition {
+  min-height: 100vh;
+  opacity: 1;
+  transition: opacity 160ms ease;
+  will-change: opacity;
+}
+
+.app-page-transition[data-transition-phase='leaving'],
+.app-page-transition[data-transition-phase='entering'] {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.app-shell {
+  padding: 0 20px 48px;
+}
+
+.app-header {
+  position: sticky;
+  z-index: 100;
+  top: 0;
+  margin: 0 -20px 18px;
+  padding: 12px 20px 10px;
+  border-bottom: 1px solid var(--ui-border);
+  background: var(--ui-header-background);
+  box-shadow: var(--ui-shadow-header);
+  backdrop-filter: blur(8px);
+}
+
+.toolbar-wrap {
+  width: min(100%, 262.5mm);
+  margin: 0 auto;
+}
+
+.site-navigation-block {
+  margin: 0 0 10px;
+  padding: 0 0 9px;
+  border-bottom: 1px solid var(--ui-border);
+}
+
+.site-navigation-row {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.site-current-recipient-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  margin-top: 8px;
+}
+
+.site-current-recipient-row > .ui-button {
+  flex-shrink: 0;
+}
+
+.current-recipient-summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  min-height: var(--button-height);
+  margin-left: 0;
+  padding: 6px 10px;
+  border: 1px solid var(--ui-border);
+  border-radius: var(--control-radius);
+  background: var(--ui-surface);
+  color: var(--ui-text);
+  font-size: 13px;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.current-recipient-summary:not(:disabled) {
+  cursor: pointer;
+  transition:
+    border-color var(--ui-motion-fast) ease,
+    background-color var(--ui-motion-fast) ease,
+    box-shadow var(--ui-motion-fast) ease;
+}
+
+.current-recipient-summary:not(:disabled):hover,
+.current-recipient-summary:not(:disabled):focus-visible {
+  border-color: var(--ui-accent);
+  background: var(--ui-surface-hover);
+  box-shadow: var(--ui-shadow-control);
+}
+
+.current-recipient-summary:focus-visible {
+  outline: 2px solid var(--ui-accent);
+  outline-offset: 2px;
+}
+
+.current-recipient-summary:disabled {
+  cursor: default;
+  opacity: 0.72;
+}
+
+.current-recipient-summary__label {
+  color: var(--ui-text-muted);
+  font-weight: 500;
+}
+
+.current-recipient-summary__name {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--ui-text-strong);
+  font-weight: 700;
+  text-overflow: ellipsis;
+}
+
+.current-recipient-summary__blood-group {
+  flex: 0 0 auto;
+  padding-left: 7px;
+  border-left: 1px solid var(--ui-border);
+  color: var(--ui-accent-hover);
+  font-weight: 700;
+}
+
+.current-recipient-summary--empty {
+  color: var(--ui-text-muted);
+}
+
+.current-recipient-summary__empty {
+  font-weight: 600;
+}
+
+.site-navigation {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 1.4rem;
+  min-width: 0;
+}
+
+.site-navigation__link {
+  display: inline-flex;
+  min-width: 0;
+  min-height: 1.75rem;
+  align-items: center;
+  padding: 0.2rem 0;
+  color: var(--ui-accent-hover);
+  font-size: 0.82rem;
+  font-weight: 600;
+  line-height: 1.4;
+  text-decoration: none;
+  text-underline-offset: 0.3em;
+  transition: color var(--ui-motion-fast) ease;
+}
+
+a.site-navigation__link:hover,
+a.site-navigation__link:focus-visible {
+  color: var(--ui-accent);
+  text-decoration: underline;
+}
+
+.site-navigation__link--current {
+  color: var(--ui-text-strong);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  cursor: default;
+}
+
+.print-actions {
+  width: 100%;
+  margin: 0;
+  display: flex;
+  justify-content: flex-end;
+  gap: 7px;
+}
+
+.toolbar-status {
+  margin-top: 0.45rem;
+  color: var(--ui-text-muted);
+  font-size: 13px;
+  text-align: right;
+  line-height: 1.5;
+  white-space: pre-line;
+  text-wrap: pretty;
+}
+
+.toolbar-warning,
+.toolbar-danger-warning,
+.toolbar-blood-group-warning,
+.toolbar-component-unit-warning {
+  margin-top: 0.55rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-page-transition,
+  .site-navigation__link,
+  .current-recipient-summary:not(:disabled) {
+    transition: none;
+  }
+}
+
+.sheets {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+}
+
+.sheet {
+  width: 210mm;
+  height: 297mm;
+  zoom: 1.25;
+  padding: 18mm 18mm 16mm;
+  overflow: hidden;
+  background: #fff;
+  color: #000;
+  box-shadow: 0 8px 32px rgba(18, 31, 48, 0.12);
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 10.3pt;
+  font-weight: 700;
+  line-height: 1.05;
+}
+
+.sheet--first {
+  padding-top: 14mm;
+}
+
+.sheet--continuation {
+  padding-top: 18mm;
+}
+
+.legal-note {
+  width: 140mm;
+  margin: 0 0 2mm auto;
+  text-align: right;
+  font-size: 7.2pt;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.protocol-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.protocol-table th,
+.protocol-table td {
+  border: 0.3mm solid #111;
+  padding: 1.6mm 1.3mm 1.2mm;
+  vertical-align: top;
+  font-weight: 700;
+  overflow: hidden;
+}
+
+.protocol-table th {
+  text-align: center;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .fill-block > tr > th,
+  .fill-block > tr > td {
+    cursor: pointer;
+  }
+
+  .fill-block > tr > th,
+  .fill-block > tr > td,
+  .fill-block .monitor-table th,
+  .fill-block .monitor-table td {
+    transition: background-color var(--ui-motion-fast) ease;
+  }
+
+  .fill-block:is(:hover, .is-logical-hovered) > tr > th,
+  .fill-block:is(:hover, .is-logical-hovered) > tr > td,
+  .fill-block:is(:hover, .is-logical-hovered) .monitor-table th,
+  .fill-block:is(:hover, .is-logical-hovered) .monitor-table td {
+    background: var(--ui-accent-soft);
+  }
+}
+
+.document-title,
+.section-title {
+  text-align: center;
+  font-weight: 700;
+}
+
+.document-title {
+  height: 9mm;
+  font-size: 12pt;
+  vertical-align: middle !important;
+}
+
+.section-title {
+  height: 8mm;
+  padding-top: 2.1mm !important;
+  font-size: 12pt;
+  vertical-align: middle !important;
+}
+
+.cell-label {
+  min-height: 5mm;
+  margin-bottom: 0.6mm;
+  line-height: 1.08;
+}
+
+.cell-value {
+  min-height: 4.5mm;
+  margin-top: 0.8mm;
+  overflow: hidden;
+  font-weight: 400;
+  line-height: 1.08;
+  white-space: pre-wrap;
+}
+
+.cell-value--multiline {
+  min-height: 8mm;
+}
+
+.monitor-value {
+  margin: 0;
+  text-align: center;
+}
+
+.cell--centered .cell-label {
+  text-align: center;
+}
+
+.cell--inline {
+  line-height: 1.08;
+}
+
+.cell--inline .cell-label,
+.cell--inline .cell-value {
+  display: inline;
+  min-height: 0;
+  margin: 0;
+}
+
+.cell--inline .cell-value {
+  margin-left: 1.2mm;
+}
+
+.row-top-data td {
+  height: 23mm;
+}
+
+.row-large-blank td {
+  height: 11mm;
+}
+
+.row-history td {
+  height: auto;
+}
+
+.row-donor-main td {
+  height: 15mm;
+}
+
+.row-final-page1 td,
+.row-selection-date td {
+  height: 13mm;
+}
+
+.row-selection-summary td {
+  height: 10mm;
+}
+
+.stacked-field {
+  min-height: 10mm;
+}
+
+.stacked-field--second {
+  margin-top: 1.3mm;
+}
+
+.blank-line {
+  height: 4.5mm;
+  font-weight: 400;
+}
+
+.row-responsible td {
+  height: 15mm;
+}
+
+.row-reagents td {
+  height: auto;
+}
+
+.reagent-summary {
+  width: 100%;
+}
+
+.reagent-summary-content {
+  display: grid;
+  width: 100%;
+  gap: 1.3mm;
+}
+
+.reagent-line {
+  display: flex;
+  align-items: baseline;
+  gap: 1.5mm;
+  min-height: 4.5mm;
+}
+
+.reagent-item {
+  display: grid;
+  gap: 0.7mm;
+}
+
+.reagent-name {
+  font-weight: 700;
+}
+
+.reagent-inline-fields {
+  display: grid;
+  grid-template-columns: auto minmax(12mm, 0.7fr) auto minmax(22mm, 0.9fr) auto minmax(28mm, 1.8fr);
+  align-items: baseline;
+  gap: 0.6mm 1.4mm;
+  min-width: 0;
+}
+
+.reagent-label {
+  flex: 0 0 auto;
+  font-weight: 700;
+}
+
+.reagent-value {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font-weight: 400;
+  white-space: pre-wrap;
+}
+
+.row-confirmed-blood-groups td,
+.row-tests td {
+  height: auto;
+}
+
+.compatibility-inline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 1.5mm;
+  line-height: 1.08;
+}
+
+.compatibility-inline-label {
+  flex: 0 0 auto;
+  font-weight: 700;
+}
+
+.compatibility-inline-value {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font-weight: 400;
+  white-space: pre-wrap;
+}
+
+.compatibility-inline-value--below {
+  flex-basis: 100%;
+}
+
+.row-complications td {
+  height: auto;
+}
+
+.monitor-header th {
+  height: auto;
+  padding: 2mm 1mm;
+  vertical-align: top;
+  line-height: 1.08;
+}
+
+.monitor-col-period {
+  width: 38%;
+}
+.monitor-col-bp {
+  width: 17%;
+}
+.monitor-col-pulse {
+  width: 12%;
+}
+.monitor-col-temperature {
+  width: 13%;
+}
+.monitor-col-urine {
+  width: 20%;
+}
+
+.monitor-header th:first-child {
+  text-align: left;
+}
+
+.monitor-row th,
+.monitor-row td {
+  height: auto;
+  vertical-align: middle;
+}
+
+.monitor-row th {
+  padding: 2mm;
+  line-height: 1.08;
+  text-align: left;
+}
+
+.monitor-row td {
+  padding: 1mm;
+}
+
+.doctor-row td {
+  height: 22mm;
+  vertical-align: top;
+}
+
+.doctor-staff {
+  display: grid;
+  gap: 1.8mm;
+}
+
+.doctor-inline {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1.5mm;
+  margin-top: 3mm;
+  font-size: 11.5pt;
+  text-align: left;
+}
+
+.doctor-value {
+  font-weight: 700;
+}
+
+.span-2 {
+  width: 33.333%;
+}
+.span-3 {
+  width: 50%;
+}
+.span-4 {
+  width: 66.667%;
+}
+.span-6 {
+  width: 100%;
+}
+.w-30 {
+  width: 30%;
+}
+.w-31 {
+  width: 31%;
+}
+.w-39 {
+  width: 39%;
+}
+
+.registration-app-shell {
+  min-width: 0;
+  padding: 0 20px 48px;
+}
+
+.registration-header {
+  margin-right: -20px;
+  margin-left: -20px;
+}
+
+.registration-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.registration-sheet-wrap {
+  display: flex;
+  justify-content: center;
+}
+
+.registration-sheet {
+  width: 297mm;
+  height: 210mm;
+  padding: 10mm 10mm 12mm;
+  overflow: hidden;
+  background: #fff;
+  color: #000;
+  box-shadow: 0 8px 32px rgb(18 31 48 / 12%);
+  font-family: 'Times New Roman', Times, serif;
+  page: registration-page;
+}
+
+.registration-legal-reference {
+  width: 165mm;
+  margin: 0 0 2.5mm auto;
+  font-size: 7.2pt;
+  font-weight: 400;
+  line-height: 1.05;
+  text-align: right;
+}
+
+.registration-title {
+  margin: 0 0 5mm;
+  font-size: 12.5pt;
+  font-weight: 700;
+  line-height: 1.05;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.registration-patient-details {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  gap: 3mm;
+  margin-bottom: 5mm;
+  cursor: pointer;
+}
+
+.registration-patient-details::before {
+  position: absolute;
+  z-index: -1;
+  inset: -2.5mm -3mm;
+  border-radius: 4px;
+  background: transparent;
+  content: '';
+  pointer-events: none;
+  transition: background-color var(--ui-motion-fast) ease;
+}
+
+.registration-patient-details:focus-visible {
+  outline: none;
+}
+
+.registration-patient-details:focus-visible::before {
+  background: var(--ui-accent-soft);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .registration-patient-details:hover::before {
+    background: var(--ui-accent-soft);
+  }
+}
+
+.registration-patient-line {
+  display: flex;
+  align-items: baseline;
+  gap: 1mm;
+  min-width: 0;
+  font-size: 10.5pt;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.registration-patient-line--name {
+  width: 100%;
+}
+
+.registration-patient-line--meta {
+  justify-content: flex-start;
+  gap: 2.6mm;
+}
+
+.registration-meta-group {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.8mm;
+}
+
+.registration-blank {
+  --ruled-line-width: 0.3mm;
+  --ruled-bottom-gap: 0mm;
+  --ruled-text-line-height: 1;
+
+  height: 4mm;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.registration-blank--name {
+  flex: 1 1 auto;
+  min-width: 40mm;
+}
+
+.registration-blank--date {
+  width: 25mm;
+}
+.registration-blank--sex {
+  width: 20mm;
+}
+.registration-blank--age {
+  width: 25mm;
+}
+.registration-blank--card {
+  width: 26mm;
+}
+.registration-blank--room {
+  width: 14mm;
+}
+
+.registration-table-section {
+  position: relative;
+  cursor: pointer;
+}
+
+.registration-table-section:focus-visible {
+  outline: none;
+}
+
+.registration-table-section .registration-table th,
+.registration-table-section .registration-table td {
+  transition: background-color var(--ui-motion-fast) ease;
+}
+
+.registration-table-section:focus-visible .registration-table th,
+.registration-table-section:focus-visible .registration-table td {
+  background: var(--ui-accent-soft);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .registration-table-section:hover .registration-table th,
+  .registration-table-section:hover .registration-table td {
+    background: var(--ui-accent-soft);
+  }
+}
+
+.registration-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 8.7pt;
+  line-height: 1.05;
+}
+
+.registration-table th,
+.registration-table td {
+  border: 0.3mm solid #111;
+}
+
+.registration-table th {
+  padding: 1.1mm 1mm;
+  font-weight: 700;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.registration-table thead tr:first-child th {
+  height: 30mm;
+}
+
+.registration-table thead tr:last-child th {
+  height: 8mm;
+}
+
+.registration-table tbody td {
+  height: 6.3mm;
+  padding: 0.6mm;
+  font-weight: 400;
+  vertical-align: middle;
+}
+
+.registration-col-component {
+  width: 22.3%;
+}
+.registration-col-liters {
+  width: 6%;
+}
+.registration-col-units {
+  width: 6%;
+}
+.registration-col-date {
+  width: 8.1%;
+}
+.registration-col-doctor {
+  width: 11.5%;
+}
+.registration-col-doctor-sign {
+  width: 10.4%;
+}
+.registration-col-worker {
+  width: 12.9%;
+}
+.registration-col-nurse-sign {
+  width: 10%;
+}
+.registration-col-complications {
+  width: 12.8%;
+}
+
+@page registration-page {
+  size: A4 portrait;
+  margin: 0;
+}
+
+@media (max-width: 1250px) {
+  .registration-app-shell {
+    padding-right: 10px;
+    padding-left: 10px;
+  }
+
+  .registration-header {
+    margin-right: -10px;
+    margin-left: -10px;
+  }
+
+  .registration-sheet-wrap {
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding-bottom: 8px;
+  }
+}
+
+@media (max-width: 900px) {
+  .app-shell {
+    padding: 0 10px 30px;
+  }
+
+  .app-header {
+    margin: 0 -10px 14px;
+    padding: 10px;
+  }
+
+  .site-navigation-row {
+    flex-wrap: wrap;
+  }
+
+  .site-current-recipient-row {
+    width: 100%;
+  }
+
+  .current-recipient-summary {
+    flex: 1;
+  }
+
+  .print-actions {
+    flex-wrap: wrap;
+  }
+
+  .sheets {
+    align-items: flex-start;
+    overflow-x: auto;
+    padding-bottom: 8px;
+  }
+
+  .sheet {
+    flex: 0 0 210mm;
+    transform-origin: top left;
+  }
+}
+
+@media (max-width: 600px) {
+  .current-recipient-summary {
+    flex-wrap: wrap;
+    gap: 3px 7px;
+    text-align: left;
+  }
+
+  .current-recipient-summary__label {
+    flex-basis: 100%;
+  }
+
+  .current-recipient-summary__name {
+    flex: 1;
+  }
+}
+
+.protocol-print-warning {
+  display: none;
+}
+
+@page {
+  size: A4 portrait;
+  margin: 0;
+}
+
+@media print {
+  .app-page-transition {
+    min-height: 0;
+    opacity: 1 !important;
+    transition: none !important;
+  }
+
+  :root,
+  body,
+  #root {
+    width: 210mm;
+    margin: 0;
+    padding: 0;
+    background: #fff;
+  }
+
+  .app-shell {
+    padding: 0;
+  }
+
+  .app-header {
+    display: none !important;
+  }
+
+  .protocol-app-shell[data-print-blocked='true'] .sheets {
+    display: none !important;
+  }
+
+  html[data-protocol-print-blocked='true'],
+  html[data-protocol-print-blocked='true'] body,
+  html[data-protocol-print-blocked='true'] #root,
+  .protocol-app-shell[data-print-blocked='true'] {
+    position: static !important;
+    width: 210mm !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+  }
+
+  html[data-app-page='protocol'] dialog {
+    display: none !important;
+  }
+
+  .protocol-app-shell[data-print-blocked='true'] .protocol-print-warning {
+    display: block;
+    margin: 20mm;
+    font:
+      14pt Arial,
+      sans-serif;
+  }
+
+  .registration-patient-details {
+    background: transparent !important;
+    box-shadow: none !important;
+    outline: none !important;
+  }
+
+  .registration-patient-details::before {
+    display: none !important;
+  }
+
+  .registration-table-section {
+    cursor: default;
+    outline: none !important;
+  }
+
+  .registration-table-section .registration-table th,
+  .registration-table-section .registration-table td {
+    background: transparent !important;
+    transition: none !important;
+  }
+
+  .sheets {
+    display: block;
+  }
+
+  .sheet {
+    width: 210mm;
+    height: 297mm;
+    zoom: 1;
+    margin: 0;
+    box-shadow: none;
+    break-after: page;
+    page-break-after: always;
+  }
+
+  .sheet:last-child {
+    break-after: auto;
+    page-break-after: auto;
+  }
+
+  .sheet[data-print-hidden='true'] {
+    display: none !important;
+  }
+
+  html[data-print-page],
+  html[data-print-page] body,
+  html[data-print-page] #root,
+  html[data-print-page] .app-shell {
+    width: 210mm;
+    height: 290mm;
+    min-height: 0;
+    max-height: 290mm;
+    overflow: hidden !important;
+  }
+
+  html[data-print-page] .sheets {
+    position: relative;
+    width: 210mm;
+    height: 290mm;
+    min-height: 0;
+    max-height: 290mm;
+    overflow: hidden !important;
+  }
+
+  html[data-print-page] .sheet {
+    position: absolute;
+    top: 0;
+    left: 5.25mm;
+    width: 210mm;
+    height: 297mm;
+    min-height: 297mm;
+    max-height: 297mm;
+    margin: 0;
+    zoom: 0.95;
+    overflow: hidden !important;
+    break-before: avoid;
+    break-after: avoid;
+    break-inside: avoid;
+    page-break-before: avoid;
+    page-break-after: avoid;
+    page-break-inside: avoid;
+  }
+
+  html[data-app-page='registration'][data-registration-print-rotated],
+  html[data-app-page='registration'][data-registration-print-rotated] body,
+  html[data-app-page='registration'][data-registration-print-rotated] #root {
+    width: 210mm;
+    height: 297mm;
+    min-width: 210mm;
+    min-height: 297mm;
+    margin: 0;
+    padding: 0;
+    overflow: hidden !important;
+  }
+
+  html[data-app-page='registration'][data-registration-print-rotated] .registration-app-shell,
+  html[data-app-page='registration'][data-registration-print-rotated] .registration-sheet-wrap {
+    position: relative;
+    width: 210mm;
+    height: 297mm;
+    margin: 0;
+    padding: 0;
+    overflow: hidden !important;
+  }
+
+  html[data-app-page='registration'][data-registration-print-rotated] .registration-sheet {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 297mm;
+    height: 210mm;
+    margin: 0;
+    padding: 10mm 10mm 12mm;
+    box-shadow: none;
+    transform: translateY(297mm) rotate(-90deg);
+    transform-origin: top left;
+  }
+}
+
+.monitor-wrapper {
+  padding: 0 !important;
+}
+
+.monitor-table {
+  width: 100%;
+  margin: 0;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.monitor-table th,
+.monitor-table td {
+  border: 0.3mm solid #111;
+}
+
+.monitor-table tr:first-child > * {
+  border-top: 0;
+}
+
+.monitor-table tr:last-child > * {
+  border-bottom: 0;
+}
+
+.monitor-table tr > :first-child {
+  border-left: 0;
+}
+
+.monitor-table tr > :last-child {
+  border-right: 0;
+}
+
+a.site-navigation__link:focus-visible {
+  outline: 2px solid var(--ui-accent);
+  outline-offset: 2px;
+}

@@ -1,0 +1,79 @@
+import {
+  ABO_OPTIONS,
+  ANTIGEN_OPTIONS,
+  getBloodGroupTone,
+  normalizeBloodGroupRh,
+  RH_OPTIONS,
+} from './blood-group-options';
+import { BloodGroupSelectField } from './blood-group-select-field';
+import { DONOR_ANTIGENS } from './donor-model';
+import { componentGroupChanges, selectedBloodComponentGroup } from '../../domain/blood-components';
+import { BloodComponentSelector } from '../blood-component-selector/blood-component-selector';
+import type { ProtocolValues } from './protocol-types';
+import styles from './recipient-examination-fields.module.css';
+
+type Props = {
+  values: ProtocolValues;
+  onChange: (values: ProtocolValues) => void;
+  showComponentSelector?: boolean;
+};
+
+export const DonorFields = ({ values, onChange, showComponentSelector = true }: Props) => {
+  const selectedComponent = selectedBloodComponentGroup(values, values.componentName);
+  const donorRh = normalizeBloodGroupRh(values.donorRh);
+  const bloodGroupTone = getBloodGroupTone(donorRh);
+
+  return (
+    <div className={styles.root}>
+      {showComponentSelector && (
+        <BloodComponentSelector
+          group={selectedComponent}
+          name={values.componentName ?? ''}
+          lastSelectedGroup={values.lastSelectedComponentGroup}
+          onChange={({ group, name }) => onChange(componentGroupChanges(values, group, name))}
+        />
+      )}
+
+      <div className={styles.topGrid}>
+        <BloodGroupSelectField
+          name="donorAbo"
+          label="Группа крови AB0"
+          options={ABO_OPTIONS}
+          value={values.donorAbo ?? ''}
+          tone={bloodGroupTone}
+          onChange={(value) => onChange({ donorAbo: value })}
+        />
+        <BloodGroupSelectField
+          name="donorRh"
+          label="Резус-принадлежность"
+          options={RH_OPTIONS}
+          value={donorRh}
+          tone={bloodGroupTone}
+          onChange={(value) => onChange({ donorRh: value })}
+        />
+      </div>
+
+      {selectedComponent === 'erythrocytes' && (
+        <>
+          <div className={styles.groupTitle}>Антигены:</div>
+          <div className={styles.antigenGrid}>
+            {DONOR_ANTIGENS.map(({ name, label }) => (
+              <BloodGroupSelectField
+                key={name}
+                name={name}
+                label={label}
+                options={ANTIGEN_OPTIONS}
+                value={values[name] ?? ''}
+                emptyLabel="Не выбрано"
+                emptyDisplayLabel=""
+                compact
+                antigen
+                onChange={(value) => onChange({ [name]: value, donorAntigens: '' })}
+              />
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+};

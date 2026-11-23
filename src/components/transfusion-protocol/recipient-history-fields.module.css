@@ -1,0 +1,163 @@
+.root {
+  composes: ui-stack ui-full-width-stack from global;
+}
+
+.historySection {
+  min-width: 0;
+}
+
+.group {
+  composes: ui-fieldset from global;
+}
+
+.groupDisabled {
+  background: var(--ui-surface-soft);
+  opacity: 0.58;
+}
+
+.groupDisabled .option {
+  cursor: default;
+}
+
+.options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem 1.5rem;
+}
+
+.option {
+  composes: ui-choice-label from global;
+}
+
+.group > textarea {
+  margin-top: 0.75rem;
+}
+
+.obstetricGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: end;
+  gap: 0.9rem 1.1rem;
+}
+
+.obstetricField {
+  min-width: 0;
+  margin: 0;
+  border: 0;
+  padding: 0;
+}
+
+.obstetricField:disabled {
+  opacity: 0.58;
+}
+
+.obstetricField:disabled [aria-haspopup='listbox'] {
+  border-color: var(--ui-border);
+  background: var(--ui-disabled-background);
+  color: var(--ui-text-disabled);
+  cursor: default;
+}
+
+.obstetricGrid input:not([type='radio']) {
+  width: 6rem;
+  max-width: 100%;
+}
+
+.countField {
+  min-width: 0;
+}
+
+.countLabel {
+  composes: ui-field-label from global;
+}
+
+.countOptions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.55rem 1rem;
+}
+
+.countQuantity {
+  display: inline-flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.countQuantity input[type='number'] {
+  width: 4.5rem;
+}
+
+.obstetricField[data-type='select'] [aria-haspopup='listbox'] {
+  width: 12rem;
+  max-width: 100%;
+}
+
+@media (max-width: 680px) {
+  .obstetricGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.suggestion {
+  composes: ui-notice ui-info-notice from global;
+  display: grid;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.suggestionHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.suggestionTitle {
+  color: var(--ui-accent-hover);
+  font-size: var(--ui-font-section);
+  font-weight: 700;
+}
+
+.suggestionHint {
+  composes: ui-help-text from global;
+  margin-top: 0.2rem;
+}
+
+.suggestionPreview {
+  composes: ui-body-text from global;
+  max-height: 9rem;
+  overflow-y: auto;
+  border: 1px solid var(--ui-border);
+  border-radius: 0.5rem;
+  padding: 0.65rem 0.75rem;
+  background: var(--ui-surface);
+  white-space: pre-wrap;
+}
+
+.suggestionActions {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.suggestionAccept {
+  composes: ui-button ui-success-button ui-compact-button from global;
+}
+
+.suggestionDecline {
+  composes: ui-button ui-danger-button ui-compact-button from global;
+}
+
+@media (max-width: 680px) {
+  .suggestionHeader {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .suggestionActions > button {
+    flex: 1;
+  }
+}

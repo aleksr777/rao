@@ -1,0 +1,151 @@
+import { getDatabase, type SqliteDatabase } from './database';
+import type { ProtocolValuesRecord, RecipientRecord } from './database-types';
+import {
+  mergeProfileValues,
+  normalizeKey,
+  normalizeName,
+  parseValues,
+  profileFromValues,
+} from './recipient-data';
+
+const mapRecipient = (row: Record<string, unknown>): RecipientRecord => ({
+  id: Number(row.id),
+  fullName: String(row.fullName),
+  profile: profileFromValues(parseValues(String(row.profileJson))),
+  protocolCount: Number(row.protocolCount ?? 0),
+  registrationCount: Number(row.registrationCount ?? 0),
+  individualSelectionDirectionCount: Number(row.individualSelectionDirectionCount ?? 0),
+  componentRequestCount: Number(row.componentRequestCount ?? 0),
+});
+const getRecipient = (db: SqliteDatabase, id: number) => {
+  const rows = db.exec({
+    sql: `
+      SELECT r.id, r.full_name AS fullName, r.profile_json AS profileJson,
+        (SELECT COUNT(*) FROM protocol_records p WHERE p.recipient_id = r.id) AS protocolCount,
+        (SELECT COUNT(*) FROM registration_records rr WHERE rr.recipient_id = r.id)
+          AS registrationCount,
+        (SELECT COUNT(*) FROM blood_request_records br
+          WHERE br.recipient_id = r.id AND br.kind = 'individual-selection-direction')
+          AS individualSelectionDirectionCount,
+        (SELECT COUNT(*) FROM blood_request_records br
+          WHERE br.recipient_id = r.id AND br.kind = 'component-request')
+          AS componentRequestCount
+      FROM recipients r
+      WHERE r.id = $id
+    `,
+    bind: { $id: id },
+    rowMode: 'object',
+    returnValue: 'resultRows',
+  }) as Array<Record<string, unknown>>;
+  if (!rows[0]) throw new Error('Реципиент не найден.');
+  return mapRecipient(rows[0]);
+};
+export const getRecipientById = async (id: number) => {
+  const db = await getDatabase();
+  return getRecipient(db, id);
+};
+
+export const searchRecipients = async (query: string) => {
+  const db = await getDatabase();
+  const value = normalizeKey(query);
+  const rows = db.exec({
+    sql: `
+      SELECT r.id, r.full_name AS fullName, r.profile_json AS profileJson,
+        (SELECT COUNT(*) FROM protocol_records p WHERE p.recipient_id = r.id) AS protocolCount,
+        (SELECT COUNT(*) FROM registration_records rr WHERE rr.recipient_id = r.id)
+          AS registrationCount,
+        (SELECT COUNT(*) FROM blood_request_records br
+          WHERE br.recipient_id = r.id AND br.kind = 'individual-selection-direction')
+          AS individualSelectionDirectionCount,
+        (SELECT COUNT(*) FROM blood_request_records br
+          WHERE br.recipient_id = r.id AND br.kind = 'component-request')
+          AS componentRequestCount
+      FROM recipients r
+      WHERE $query = '' OR r.normalized_name LIKE $like
+      ORDER BY r.full_name
+      LIMIT 100
+    `,
+    bind: { $query: value, $like: `%${value}%` },
+    rowMode: 'object',
+    returnValue: 'resultRows',
+  }) as Array<Record<string, unknown>>;
+  return rows.map(mapRecipient);
+};
+export const findRecipientsByName = async (fullName: string) => {
+  const db = await getDatabase();
+  const rows = db.exec({
+    sql: `
+      SELECT r.id, r.full_name AS fullName, r.profile_json AS profileJson,
+        (SELECT COUNT(*) FROM protocol_records p WHERE p.recipient_id = r.id) AS protocolCount,
+        (SELECT COUNT(*) FROM registration_records rr WHERE rr.recipient_id = r.id)
+          AS registrationCount,
+        (SELECT COUNT(*) FROM blood_request_records br
+          WHERE br.recipient_id = r.id AND br.kind = 'individual-selection-direction')
+          AS individualSelectionDirectionCount,
+        (SELECT COUNT(*) FROM blood_request_records br
+          WHERE br.recipient_id = r.id AND br.kind = 'component-request')
+          AS componentRequestCount
+      FROM recipients r
+      WHERE r.normalized_name = $name
+      ORDER BY r.updated_at DESC, r.id DESC
+    `,
+    bind: { $name: normalizeKey(fullName) },
+    rowMode: 'object',
+    returnValue: 'resultRows',
+  }) as Array<Record<string, unknown>>;
+  return rows.map(mapRecipient);
+};
+export const updateRecipient = async (id: number, values: ProtocolValuesRecord) => {
+  const fullName = normalizeName(values.recipientName ?? '');
+  if (!fullName) throw new Error('Укажите ФИО реципиента.');
+
+  const db = await getDatabase();
+  const existingRows = db.exec({
+    sql: 'SELECT profile_json AS profileJson FROM recipients WHERE id = $id',
+    bind: { $id: id },
+    rowMode: 'object',
+    returnValue: 'resultRows',
+  }) as Array<{ profileJson: string }>;
+  if (!existingRows[0]) {
+    throw new Error('Выбранная карточка реципиента удалена. Выберите пациента заново.');
+  }
+
+  const normalizedName = normalizeKey(fullName);
+  const now = Date.now();
+  const profile = mergeProfileValues(parseValues(existingRows[0].profileJson), values);
+
+  db.exec({
+    sql: `
+      UPDATE recipients
+      SET full_name = $fullName, normalized_name = $name,
+        profile_json = $profile, updated_at = $now
+      WHERE id = $id
+    `,
+    bind: {
+      $fullName: fullName,
+      $name: normalizedName,
+      $profile: JSON.stringify(profile),
+      $now: now,
+      $id: id,
+    },
+  });
+
+  // Saved forms are historical snapshots. Current forms receive profile updates
+  // through current-recipient.ts and are saved as new records when changed.
+  return getRecipient(db, id);
+};
+export const removeRecipient = async (id: number) => {
+  const db = await getDatabase();
+  db.transaction(() => {
+    db.exec({ sql: 'DELETE FROM protocol_records WHERE recipient_id = $id', bind: { $id: id } });
+    db.exec({
+      sql: 'DELETE FROM registration_records WHERE recipient_id = $id',
+      bind: { $id: id },
+    });
+    db.exec({
+      sql: 'DELETE FROM blood_request_records WHERE recipient_id = $id',
+      bind: { $id: id },
+    });
+    db.exec({ sql: 'DELETE FROM recipients WHERE id = $id', bind: { $id: id } });
+  });
+};

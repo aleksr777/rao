@@ -1,0 +1,92 @@
+import { RadioOption } from '../radio-option/radio-option';
+import { useEffect } from 'react';
+import { ProtocolFieldControl } from './protocol-field-control';
+import { COMPLICATIONS_STATUS, getComplicationsStatus } from './complications-model';
+import type { ProtocolFieldConfig, ProtocolValues } from './protocol-types';
+import styles from './complications-fields.module.css';
+
+type Props = {
+  applyDefaults?: boolean;
+  values: ProtocolValues;
+  onChange: (values: ProtocolValues) => void;
+};
+
+const DEFAULT_SEVERITY = 'Средней степени тяжести';
+
+const DETAIL_FIELDS: ProtocolFieldConfig[] = [
+  {
+    name: 'symptoms',
+    label: 'Основные симптомы',
+    type: 'textarea',
+    wide: true,
+  },
+  {
+    name: 'severity',
+    label: 'Степень тяжести',
+    type: 'select',
+    options: [DEFAULT_SEVERITY, 'Тяжёлое', 'Крайне тяжёлое'],
+    wide: true,
+    required: true,
+  },
+];
+
+export const ComplicationsFields = ({ values, onChange, applyDefaults = true }: Props) => {
+  const status = getComplicationsStatus(values);
+  const changeValue = (name: string, value: string) => onChange({ [name]: value });
+
+  useEffect(() => {
+    if (applyDefaults && status === COMPLICATIONS_STATUS.had && !values.severity) {
+      onChange({ severity: DEFAULT_SEVERITY });
+    }
+  }, [onChange, status, values.severity, applyDefaults]);
+
+  return (
+    <div className={styles.root}>
+      <fieldset className={styles.statusGroup}>
+        <legend>Реакции и осложнения</legend>
+        <div className={styles.options}>
+          <RadioOption
+            className={styles.option}
+            name="complicationsStatus"
+            checked={status === COMPLICATIONS_STATUS.none}
+            onChange={(checked) =>
+              onChange({ complicationsStatus: checked ? COMPLICATIONS_STATUS.none : '' })
+            }
+          >
+            Не было
+          </RadioOption>
+          <RadioOption
+            className={styles.option}
+            name="complicationsStatus"
+            checked={status === COMPLICATIONS_STATUS.had}
+            onChange={(checked) =>
+              onChange(
+                checked
+                  ? {
+                      complicationsStatus: COMPLICATIONS_STATUS.had,
+                      severity: values.severity || DEFAULT_SEVERITY,
+                    }
+                  : { complicationsStatus: '' },
+              )
+            }
+          >
+            Были
+          </RadioOption>
+        </div>
+      </fieldset>
+
+      {status === COMPLICATIONS_STATUS.had && (
+        <div className={styles.details}>
+          {DETAIL_FIELDS.map((field) => (
+            <ProtocolFieldControl
+              key={field.name}
+              field={field}
+              value={values[field.name] ?? ''}
+              onChange={changeValue}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
